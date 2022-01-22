@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using RPG.Movement;
+using RPG.Core;
 
 namespace RPG.Combat
 {
@@ -17,24 +18,26 @@ namespace RPG.Combat
 
         void Update()
         {
-            if (target != null && !(Vector3.Distance(transform.position, target.position) < weaponRange))
+            if (target == null) return;
+            if (!(Vector3.Distance(transform.position, target.position) < weaponRange))
             {
                 GetComponent<Mover>().MoveTo(target.position);
             }
             else
             {
-                target = null;
+                // Cancel();
                 GetComponent<Mover>().Stop();
             }
         }
 
-        public void Stop()
+        public void Cancel()
         {
-
+            target = null;
         }
 
         public void Attack(CombatTarget combatTarget)
         {
+            GetComponent<ActionScheduler>().StartAction(this);
             target = combatTarget.transform;
         }
     }
